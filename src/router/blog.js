@@ -4,7 +4,7 @@ const {
     getList,
     getDetail,
     newBlog,
-    updataBlog,
+    updateBlog,
     delBlog
 
 } = require('../controller/blog')
@@ -30,36 +30,51 @@ const handleBlogRouter = (req, res) => {
     if (method === "GET" & req.path === "/api/blog/detail") {
         // const data = getDetail(id)
         // return new SuccessModel(data)
-        const result =getDetail(id)
-        return result.then(data=>{
-            return new SuccessModel(data) 
+        const result = getDetail(id)
+        return result.then(data => {
+            return new SuccessModel(data)
         })
     }
 
-    //新增博客
+    //新增一片博客
     if (method === "POST" & req.path === "/api/blog/new") {
-        const data = newBlog(req.body)
-        return new SuccessModel(data)
+        // const data = newBlog(req.body)
+        // return new SuccessModel(data)
+        //作者是假数据  待开发登陆改为真实数据
+        req.body.author = 'zhangsan'
+        const result = newBlog(req.body)
+        return result.then(data => {
+            return new SuccessModel(data)
+        })
     }
 
     //更新博客
     if (method === "POST" & req.path === "/api/blog/update") {
-        const result = updataBlog(id, req.body)
-        if (result) {
-            return new SuccessModel(result)
-        } else {
-            return new ErrorModel("更新失败")
-        }
+        const result = updateBlog(id, req.body)
+        return result.then(val => {
+            if (val) {
+                return new SuccessModel(val)
+            } else {
+                return new ErrorModel("更新失败")
+            }
+
+        })
+
     }
 
     //删除博客
     if (method == "POST" & req.path === "/api/blog/del") {
-        const result = delBlog(id)
-        if (result) {
-            return new SuccessModel(result)
-        } else {
-            return new ErrorModel("删除失败")
-        }
+        const author = 'zhangsan'
+        const result = delBlog(id, author)
+        return result.then(val => {
+            if (val) {
+                return new SuccessModel(val)
+            } else {
+                return new ErrorModel("删除失败")
+            }
+
+        })
+
     }
 }
 module.exports = handleBlogRouter
