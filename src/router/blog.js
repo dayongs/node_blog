@@ -11,13 +11,13 @@ const {
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 const handleBlogRouter = (req, res) => {
     const method = req.method
-    const id = req.qurey.id
+    const id = req.id
 
 
     //获取博客列表
-    if (method === "GET" & req.path === "/api/blog/list") {
-        const author = req.qurey.author || ''
-        const keyword = req.qurey.keyword || ''
+    if (method === "GET" && req.path === "/api/blog/list") {
+        const author = req.query.author || ''
+        const keyword = req.query.keyword || ''
             // const listData = getList(author, keyWord)
             // return new SuccessModel(listData)
         const result = getList(author, keyword)
@@ -27,7 +27,7 @@ const handleBlogRouter = (req, res) => {
     }
 
     // 获取博客详情
-    if (method === "GET" & req.path === "/api/blog/detail") {
+    if (method === "GET" && req.path === "/api/blog/detail") {
         // const data = getDetail(id)
         // return new SuccessModel(data)
         const result = getDetail(id)
@@ -37,7 +37,7 @@ const handleBlogRouter = (req, res) => {
     }
 
     //新增一片博客
-    if (method === "POST" & req.path === "/api/blog/new") {
+    if (method === "POST" && req.path === "/api/blog/new") {
         // const data = newBlog(req.body)
         // return new SuccessModel(data)
         //作者是假数据  待开发登陆改为真实数据
@@ -49,7 +49,7 @@ const handleBlogRouter = (req, res) => {
     }
 
     //更新博客
-    if (method === "POST" & req.path === "/api/blog/update") {
+    if (method === "POST" && req.path === "/api/blog/update") {
         const result = updateBlog(id, req.body)
         return result.then(val => {
             if (val) {
@@ -63,7 +63,7 @@ const handleBlogRouter = (req, res) => {
     }
 
     //删除博客
-    if (method == "POST" & req.path === "/api/blog/del") {
+    if (method == "POST" && req.path === "/api/blog/del") {
         const author = 'zhangsan'
         const result = delBlog(id, author)
         return result.then(val => {
