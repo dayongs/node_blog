@@ -1,5 +1,6 @@
 const { login } = require('../controller/user')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
+const { set } = require('../db/redis')
 
 
 //设置cookie过期时间
@@ -20,16 +21,15 @@ const handleUserRouter = (req, res) => {
         const result = login(username, password)
         return result.then(data => {
             if (data.username) {
-
                 //设置session
                 req.session.username = data.username
-                req.session.realName = data.realname
+                req.session.realname = data.realname
                     // console.log('req.session is', req.session)
-
-                return new SuccessModel(data)
-            } else {
-                return new ErrorModel('登陆失败')
+                    // 同步到 redis
+                set(req.sessionId, req.session)
+                return new SuccessModel()
             }
+            return new ErrorModel('登陆失败')
         })
     }
 
@@ -37,7 +37,9 @@ const handleUserRouter = (req, res) => {
     //登陆检验测试
 
     if (method === 'GET' && req.path === '/api/user/login-test') {
+        console.log('000', req.session.username)
         if (req.session.username) {
+
             return Promise.resolve(
                 new SuccessModel({
                     session: req.session
